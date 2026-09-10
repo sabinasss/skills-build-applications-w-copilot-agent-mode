@@ -1,24 +1,13 @@
-import express from 'express'
-import mongoose from 'mongoose'
+import { connectDatabase } from './config/database.js';
+import { app, port } from './server.js';
 
-const app = express()
-const port = Number(process.env.PORT ?? 8000)
-const mongoUri = process.env.MONGODB_URI ?? 'mongodb://127.0.0.1:27017/octofit_db'
-
-app.use(express.json())
-
-app.get('/api/health', (_request, response) => {
-  response.json({ status: 'ok' })
-})
-
-mongoose
-  .connect(mongoUri)
+connectDatabase()
   .then(() => {
     app.listen(port, () => {
-      console.log(`OctoFit API listening on port ${port}`)
-    })
+      console.log(`OctoFit API listening on port ${port}`);
+    });
   })
   .catch((error: unknown) => {
-    console.error('MongoDB connection failed', error)
-    process.exitCode = 1
-  })
+    console.error('MongoDB connection failed', error);
+    process.exitCode = 1;
+  });
